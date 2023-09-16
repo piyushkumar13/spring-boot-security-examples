@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/user_db
+    username: root
+    password: 12345678
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+#        ddl-auto: create
+    show-sql: true
+
+# Setting below logging to DEBUG was not enabling security logs so I enable it with @EnableWebSecurity(debug=true) which worked.
+# However, below one should also work. Not sure why not working.
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
