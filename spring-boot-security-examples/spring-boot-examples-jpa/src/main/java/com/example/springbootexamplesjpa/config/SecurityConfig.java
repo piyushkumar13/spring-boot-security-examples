@@ -127,6 +127,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated();
                 })
                 .userDetailsService(userDetailsService)
+//                .authenticationProvider() // we could also use this and assign a authentication provider bean as we did above.
                 .httpBasic(Customizer.withDefaults())
                 .build();
 
