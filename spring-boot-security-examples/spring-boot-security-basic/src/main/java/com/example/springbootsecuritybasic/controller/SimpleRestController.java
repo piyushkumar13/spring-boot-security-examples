@@ -88,7 +88,7 @@ public class SimpleRestController {
 
     // region check basic authentication based on authorities
 
-    @GetMapping("/checkAuthorities/admUser")
+    @GetMapping("/checkAuthorities/admUsr")
     public ResponseEntity<Object> getEmployeesForAdminAuthorities(){
 
         Employee employee = Employee.builder()
