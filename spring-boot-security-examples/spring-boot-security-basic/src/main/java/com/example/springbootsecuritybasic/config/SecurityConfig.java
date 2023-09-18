@@ -47,14 +47,31 @@ public class SecurityConfig {
 //    @Configuration
 //    public static class ConfigUsingWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //
-//        @Override
-//        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+//    @Override
+//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
 //
-//            auth.inMemoryAuthentication()
-//                .withUser("piyush").password(passwordEncoder().encode("piyush123")).roles("ADMIN").authorities("READ", "WRITE", "DELETE")
-//                .and()
-//                .withUser("sandeep").password(passwordEncoder().encode("sandeep123")).roles("USER").authorities("READ", "WRITE");
-//        }
+//        /*With in memory user, you can either set roles or authorities but not both at tha same time*/
+//
+//        auth.inMemoryAuthentication()
+//            .withUser("piyush").password(passwordEncoder().encode("piyush123"))
+//            .roles("ADMIN")
+////                .authorities("READ", "WRITE", "DELETE")
+//            .and()
+//            .withUser("sandeep")
+//            .password(passwordEncoder().encode("sandeep123"))
+//            .roles("USER");
+////                .authorities("READ", "WRITE");
+//
+//
+//        /* If we want to set both we will have to set all authorities and roles within authorities itself */
+//        auth.inMemoryAuthentication()
+//            .withUser("piyush").password(passwordEncoder().encode("piyush123"))
+//            .authorities("ROLE_ADMIN", "READ", "WRITE", "DELETE")
+//            .and()
+//            .withUser("sandeep")
+//            .password(passwordEncoder().encode("sandeep123"))
+//            .authorities("ROLE_USER", "READ", "WRITE");
+//    }
 //
 //        @Override
 //        public void configure(HttpSecurity http) throws Exception {
