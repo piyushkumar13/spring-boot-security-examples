@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,7 +42,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     /* For jwt with in-memory user we can either create instance of InMemoryUserDetailsManager or we can inject AuthenticationManagerBuilder and get the userDetailsService from it.
-     *  Basically, internally it creates the InMemoryUserDetailsManager only check authenticationManagerBuilder.inMemoryAuthentication() implementation.*/
+     *  Basically, internally it creates the InMemoryUserDetailsManager only check authenticationManagerBuilder.inMemoryAuthentication() implementation.
+     * NOTE : below three bean are actually meant for ConfigUsingWebSecurityConfigurer
+     * */
 
 
     /* Using injection of AuthenticationManagerBuilder */
@@ -73,26 +76,26 @@ public class SecurityConfig {
         return authenticationManagerBuilder.getDefaultUserDetailsService();
     }
 
-//    /* Using creation of instance of InMemoryUserDetailsManager */
+    /* Using creation of instance of InMemoryUserDetailsManager */
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//
-//        /*With in memory user, you can either set roles or authorities but not both at tha same time*/
-//        UserDetails user1 = User
-//            .withUsername("piyush")
-//            .password(passwordEncoder().encode("piyush123"))
-//            .authorities("ROLE_ADMIN", "READ", "WRITE", "DELETE")
-//            .build();
-//
-//        UserDetails user2 = User
-//            .withUsername("sandeep")
-//            .password(passwordEncoder().encode("sandeep123"))
-//            .authorities("ROLE_USER", "READ", "WRITE")
-//            .build();
-//
-//        return new InMemoryUserDetailsManager(user1, user2);
-//    }
+    @Bean
+    public UserDetailsService userDetailsService() {
+
+        /*With in memory user, you can either set roles or authorities but not both at tha same time*/
+        UserDetails user1 = User
+            .withUsername("piyush")
+            .password(passwordEncoder().encode("piyush123"))
+            .authorities("ROLE_ADMIN", "READ", "WRITE", "DELETE")
+            .build();
+
+        UserDetails user2 = User
+            .withUsername("sandeep")
+            .password(passwordEncoder().encode("sandeep123"))
+            .authorities("ROLE_USER", "READ", "WRITE")
+            .build();
+
+        return new InMemoryUserDetailsManager(user1, user2);
+    }
 
 
 
@@ -136,8 +139,6 @@ public class SecurityConfig {
         public AuthenticationManager authenticationManager() throws Exception   {
             return super.authenticationManager();
         }
-
-
 
 //        @Bean
 //        public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception   {
@@ -218,46 +219,53 @@ public class SecurityConfig {
 //        }
 //
 //        @Bean
-//        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+//        public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception{
 //
 //            /* You can configure HttpSecurity in following two ways */
 //
 //            /* Without using lambdas */
-////            http.csrf().disable();
+//            http.csrf().disable();
 //
 //            return http
 //                .csrf().disable()
 //                .authorizeRequests()
-//                .antMatchers("/").permitAll()
+//                .antMatchers("/authenticate").permitAll()
 //                .antMatchers("/employee/authenticatedUsr/**").authenticated()
 //                .antMatchers("/employee/adm/**").hasRole("ADMIN")
 //                .antMatchers("/employee/usr/**").hasAnyRole("ADMIN", "USER")
 //                .antMatchers("/checkAuthorities/admUsr").hasAuthority("DELETE")
 //                .antMatchers("/checkAuthorities/usr").hasAnyAuthority("READ", "WRITE")
 //                .and()
-//                .httpBasic()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 //                .build();
 //
 //
 //
-//            /* With using lamdas */
+////            /* With using lamdas */
 ////            http.csrf(csrf -> csrf.disable());
 ////            return http.authorizeRequests(auth -> {
-////                    auth.antMatchers("/users/authenticatedUsr/**").authenticated()
-////                        .antMatchers("/users/adm/**").hasRole("ADMIN")
-////                        .antMatchers("/users/usr/**").hasAnyRole("ADMIN", "USER")
+////                    auth.antMatchers("/authenticate").permitAll()
+////                        .antMatchers("/employee/authenticatedUsr/**").authenticated()
+////                        .antMatchers("/employee/adm/**").hasRole("ADMIN")
+////                        .antMatchers("/employee/usr/**").hasAnyRole("ADMIN", "USER")
 ////                        .antMatchers("/checkAuthorities/admUsr").hasAuthority("DELETE")
 ////                        .antMatchers("/checkAuthorities/usr").hasAnyAuthority("READ", "WRITE")
-////                        .antMatchers("/users/create/**").permitAll()
 ////                        .anyRequest().authenticated();
 ////                })
-////                .userDetailsService(userDetailsService)
-//////                .authenticationProvider() // we could also use this and assign a authentication provider bean as we did above.
-////                .httpBasic(Customizer.withDefaults())
+////                .sessionManagement()
+////                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+////                .and()
+////                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 ////                .build();
 //
+//        }
 //
+//        @Bean
+//        public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+//            return authConfig.getAuthenticationManager();
 //        }
 //
 //        @Bean
