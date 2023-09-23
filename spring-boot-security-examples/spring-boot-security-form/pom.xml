@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>spring-boot-security-form</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <name>spring-boot-security-form</name>
     <description>spring-boot-security-form</description>
