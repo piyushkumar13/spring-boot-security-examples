@@ -11,6 +11,7 @@ package com.example.springbootsecurityjwtapproach2.config;
 import com.example.springbootsecurityjwtapproach2.filter.JwtAuthenticationFilter;
 import com.example.springbootsecurityjwtapproach2.filter.JwtAuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +22,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -125,7 +130,7 @@ public class SecurityConfig {
             http.csrf().disable();
 
             http.authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login").permitAll() // optional. By default is permit all
                 .antMatchers("/employee/authenticatedUsr/**").authenticated()
                 .antMatchers("/employee/adm/**").hasRole("ADMIN")
                 .antMatchers("/employee/usr/**").hasAnyRole("ADMIN", "USER")
@@ -212,7 +217,7 @@ public class SecurityConfig {
 //        }
 //
 //        @Bean
-//        public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception{
+//        public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthorizationFilter jwtAuthorizationFilter ) throws Exception{
 //
 //            /* You can configure HttpSecurity in following two ways */
 //
@@ -222,7 +227,7 @@ public class SecurityConfig {
 //            return http
 //                .csrf().disable()
 //                .authorizeRequests()
-//                .antMatchers("/authenticate").permitAll()
+//                .antMatchers("/login").permitAll() // optional. By default is permit all
 //                .antMatchers("/employee/authenticatedUsr/**").authenticated()
 //                .antMatchers("/employee/adm/**").hasRole("ADMIN")
 //                .antMatchers("/employee/usr/**").hasAnyRole("ADMIN", "USER")
@@ -232,7 +237,8 @@ public class SecurityConfig {
 //                .sessionManagement()
 //                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilter(jwtAuthenticationFilter)
+//                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
 //                .build();
 //
 //
@@ -240,7 +246,7 @@ public class SecurityConfig {
 ////            /* With using lamdas */
 ////            http.csrf(csrf -> csrf.disable());
 ////            return http.authorizeRequests(auth -> {
-////                    auth.antMatchers("/authenticate").permitAll()
+////                    auth.antMatchers("/login").permitAll() // optional. By default is permit all
 ////                        .antMatchers("/employee/authenticatedUsr/**").authenticated()
 ////                        .antMatchers("/employee/adm/**").hasRole("ADMIN")
 ////                        .antMatchers("/employee/usr/**").hasAnyRole("ADMIN", "USER")
@@ -251,7 +257,8 @@ public class SecurityConfig {
 ////                .sessionManagement()
 ////                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 ////                .and()
-////                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+////                .addFilter(jwtAuthenticationFilter)
+////                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
 ////                .build();
 //
 //        }
@@ -264,6 +271,11 @@ public class SecurityConfig {
 //        @Bean
 //        public PasswordEncoder passwordEncoder () {
 //            return new BCryptPasswordEncoder();
+//        }
+//
+//        @Bean
+//        public ObjectMapper objectMapper() {
+//            return new ObjectMapper();
 //        }
 //
 //    }
