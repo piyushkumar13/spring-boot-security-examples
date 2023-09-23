@@ -6,30 +6,24 @@
  *  AND CONSTITUTES A VALUABLE TRADE SECRET.
  */
 
-package com.example.springbootexamplesjwt.config;
+package com.example.springbootsecurityjwtapproach2.config;
 
-import com.example.springbootexamplesjwt.filter.JwtAuthFilter;
-import com.example.springbootexamplesjwt.util.JwtUtil;
-import lombok.AllArgsConstructor;
+import com.example.springbootsecurityjwtapproach2.filter.JwtAuthenticationFilter;
+import com.example.springbootsecurityjwtapproach2.filter.JwtAuthorizationFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -104,6 +98,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 
     /**
      * Configuring WebSecurityConfigurerAdapter is deprecated.
@@ -113,7 +116,8 @@ public class SecurityConfig {
     @Configuration
     public static class ConfigUsingWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-        private final JwtAuthFilter jwtAuthFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
@@ -121,7 +125,7 @@ public class SecurityConfig {
             http.csrf().disable();
 
             http.authorizeRequests()
-                .antMatchers("/authenticate").permitAll()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/employee/authenticatedUsr/**").authenticated()
                 .antMatchers("/employee/adm/**").hasRole("ADMIN")
                 .antMatchers("/employee/usr/**").hasAnyRole("ADMIN", "USER")
@@ -130,20 +134,9 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilter(jwtAuthenticationFilter)
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         }
-
-
-
-        @Bean
-        public AuthenticationManager authenticationManager() throws Exception   {
-            return super.authenticationManager();
-        }
-
-//        @Bean
-//        public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception   {
-//            return authenticationManagerBuilder.build();
-//        }
     }
 
 
