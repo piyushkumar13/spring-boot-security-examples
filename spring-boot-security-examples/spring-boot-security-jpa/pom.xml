@@ -9,7 +9,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-boot-examples-jpa</artifactId>
+    <artifactId>spring-boot-security-jpa</artifactId>
 
     <version>1.0.0-SNAPSHOT</version>
 

@@ -21,8 +21,8 @@
     <modules>
         <module>spring-boot-security-form</module>
         <module>spring-boot-security-basic</module>
-        <module>spring-boot-examples-jpa</module>
-        <module>spring-boot-examples-jwt-approach-1</module>
+        <module>spring-boot-security-jpa</module>
+        <module>spring-boot-security-jwt-approach-1</module>
     </modules>
 
     <properties>
