@@ -9,7 +9,9 @@ server:
     key-store-type: PKCS12
     key-alias: myexamplekey
 
-## Below configuration is for PEM format created via openssl
+## Below configuration is for PEM format created via openssl. Make sure to use -nodes option(which does not asks for passphrase)
+## with openssl command while generating private keya and certificate. Coz, when I am not giving -nodes option i.e I need to provide passphrase.
+## Resulting private key and certificate generated was not working. It was giving error "invalid private key format".
 ## When using certificate and key created using openssl and using .pem extensions for key and certificate.
 #    certificate: "classpath:myapplicationcrt.pem"
 #    certificate-private-key: "classpath:myapplicationkey.pem"
