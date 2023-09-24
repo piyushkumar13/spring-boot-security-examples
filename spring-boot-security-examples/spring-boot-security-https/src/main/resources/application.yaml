@@ -2,7 +2,18 @@ server:
   port: 8443
   ssl:
     enabled: true
-    key-store: spring-boot-security-https/src/main/resources/mykeystore.p12
+# Below configuration is for PKCS12 format created using keytool.
+#    key-store: spring-boot-security-https/src/main/resources/mykeystore.p12 // we can also give like this.
+    key-store: "classpath:mykeystore.p12"
     key-store-password: 12345678
     key-store-type: PKCS12
     key-alias: myexamplekey
+
+## Below configuration is for PEM format created via openssl
+## When using certificate and key created using openssl and using .pem extensions for key and certificate.
+#    certificate: "classpath:myapplicationcrt.pem"
+#    certificate-private-key: "classpath:myapplicationkey.pem"
+
+## When using certificate and key created using openssl and using .key and .crt extensions for key and certificate respectively.
+#    certificate: "classpath:myapplication.crt"
+#    certificate-private-key: "classpath:myapplication.key"
