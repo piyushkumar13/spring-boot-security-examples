@@ -11,6 +11,7 @@ package com.example.springbootexamplesjwt.controller;
 import com.example.springbootexamplesjwt.domain.AuthRequest;
 import com.example.springbootexamplesjwt.domain.AuthResponse;
 import com.example.springbootexamplesjwt.util.JwtUtil;
+import com.example.springbootexamplesjwt.util.JwtUtilWithRSA;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,8 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-    private final JwtUtil jwtUtil;
+//    private final JwtUtil jwtUtil;
+    private final JwtUtilWithRSA jwtUtil;
 
     @PostMapping("/authenticate") // means user has already signed up. This api will be invoked when user logging-in.
     public ResponseEntity<Object> authenticate(@RequestBody AuthRequest authRequest){

@@ -9,6 +9,7 @@
 package com.example.springbootexamplesjwt.filter;
 
 import com.example.springbootexamplesjwt.util.JwtUtil;
+import com.example.springbootexamplesjwt.util.JwtUtilWithRSA;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -34,7 +35,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @AllArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+//    private final JwtUtil jwtUtil;
+    private final JwtUtilWithRSA jwtUtil;
     private final UserDetailsService userDetailsService;
 
     @Override
